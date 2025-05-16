@@ -1,6 +1,7 @@
 GET http://localhost:3000/posts
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkRhcnNoYW5hIiwiaWF0IjoxNzI0NTE4Mjk2LCJleHAiOjE3MjQ1MTgzNTZ9.Gy7Bjdqg8sMGsZaNUxPSvGGYtyJssGCknICsysCi_Bw
 
+
 ###
 POST http://localhost:4000/token
 Content-Type: application/json

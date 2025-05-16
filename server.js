@@ -3,7 +3,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
+app.use(cookieParser());
 app.use(express.json());
 
 const userPost = [
@@ -14,7 +16,7 @@ const userPost = [
   },
   {
     userId: 2,
-    userName: "Naveen",
+    userName: "Bhumu",
     post: "Post 2",
   },
 ];
@@ -22,6 +24,14 @@ const userPost = [
 app.get("/posts", authenticateToken, (req, res) => {
   res.json(userPost.filter((e) => e.userName == req.user.userName));
 });
+
+app.get(
+  "/postsWithJwtStoreInCookie",
+  authenticateTokenWithJWTStoreInCookie,
+  (req, res) => {
+    res.json(userPost.filter((e) => e.userName == req.user.userName));
+  }
+);
 
 app.listen(3000);
 
@@ -34,4 +44,22 @@ function authenticateToken(req, res, next) {
     req.user = user;
     next();
   });
+}
+
+function authenticateTokenWithJWTStoreInCookie(req, res, next) {
+  try {
+    let accessToken = req.cookies.accessToken;
+    let refreshToken = req.cookies.refreshToken;
+    if (!(accessToken || refreshToken)) {
+      res.status(401);
+    }
+
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_KEY, (err, user) => {
+      if (err) res.sendStatus(403);
+      req.user = user;
+      next();
+    });
+  } catch (err) {
+    throw new Error(err);
+  }
 }
